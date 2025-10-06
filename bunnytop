@@ -1,0 +1,45 @@
+#!/bin/sh
+
+ESC=$(printf '\033')
+c0="${ESC}[0m"
+pink="${ESC}[38;5;218m"
+lav="${ESC}[38;5;183m"
+blue="${ESC}[38;5;153m"
+mint="${ESC}[38;5;122m"
+white="${ESC}[38;5;255m"
+
+while :; do
+  clear
+
+cat <<EOF
+${pink} /)/)${c0}   ${lav}bunnytop${c0}
+${pink}( . .)${c0}   ${blue}top processes${c0}
+${pink}( >♡<${c0}
+EOF
+echo
+
+  # table header
+  printf "%s%-6s %s%-8s %s%-6s %s%-6s %s%-20s%s\n" \
+    "$lav" "PID" \
+    "$blue" "USER" \
+    "$pink" "%CPU" \
+    "$mint" "%MEM" \
+    "$white" "CMD" "$c0"
+
+  printf "%s-----------------------------------------------------------%s\n" "$lav" "$c0"
+
+  # process list
+  ps -eo pid,user,%cpu,%mem,comm --sort=-%cpu 2>/dev/null \
+    | head -n 16 \
+    | tail -n +2 \
+    | while read pid user cpu mem cmd; do
+        printf "%s%-6s %s%-8s %s%-6s %s%-6s %s%-20s%s\n" \
+          "$lav" "$pid" \
+          "$blue" "$user" \
+          "$pink" "$cpu" \
+          "$mint" "$mem" \
+          "$white" "$cmd" "$c0"
+      done
+
+  sleep 5
+done
